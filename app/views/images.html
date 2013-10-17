@@ -2,12 +2,12 @@
 	<img class="logo" src="styles/img/logo_red.png">
 </div>
 <div  ng-hide="waiting">
-	<h2 class="caption">Please select 5 photos that show your beloved DISTRICT</h2>
+	<h2 class="caption">Please select 5 photos that show your beloved {{chosenDistrict.name}} </h2>
 		<div class="row">
 			<ul class="images-list">	
 				<li class="images-item" ng-repeat="item in items | orderBy:'id'" ng-class="{'selected':selectedImg[item.id]==true}">
 					<label for="item_{{ item.id }}">
-						<img src="{{ item.thumbUrl }}" />
+						<img src="{{ item.photoUrl }}" />
 					</label>
 					<input type="checkbox" id="item_{{ item.id }}" ng-model="selectedImg[item.id]">
 					<img class="imgcheck" src="styles/img/check.png">

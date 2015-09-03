@@ -43,30 +43,61 @@ angular.module("App.Images", [])
 					var newList = [];
 					$http.get(url).then(function(response) {
 						//console.log(response.data);
-						$scope.chosenDistrictList = response.data.albums.items;
-						for(var i=0; i<4; i++) {
-							$scope.chosenDistrictList[i].district = chosenDistrict._id;
-							newList.push($scope.chosenDistrictList[i]);
-						}
+						var albumid =response.data.albums.items[Math.floor(Math.random() * 4)].id;
+						var url2 = 'http://www.eyeem.com/api/v2/albums/' + albumid + '/photos?offset=0&limit=5&access_token=f346d6846f025af0327e840cce90591310ab5c0c';
+						$http.get(url2).then(function(response) {
+							$scope.chosenDistrictList = response.data.photos.items;
+							//console.log($scope.chosenDistrictList);
+							for(var i=0; i<4; i++) {
+								$scope.chosenDistrictList[i].district = chosenDistrict._id;
+							// NEEDS NEW REQUEST TOO!!
+							// REGEX:  [^/]*[-][^/]*
+
+							// var albumid1 = response.data.albums.items[i].id;
+							// 	//get the photos from the album
+							// 	var url4 = 'http://www.eyeem.com/api/v2/albums/' + albumid1 + '/photos?offset=0&limit=1&access_token=f346d6846f025af0327e840cce90591310ab5c0c';
+							// 	$http.get(url4).then(function(response) {
+							// 		//get only the newest PhotoURL
+							// 		var r2=response.data.photos.items[0].photoUrl;
+							// 		//manipulate the URL to get a square 200px Photo!
+							// 		var pattern=[^/]*[-][^/]*;
+							// 		var regexurl=r2.match(pattern);
+							// 		var newphotourl='http://cdn.eyeem.com/thumb/sq/200/'+ regexurl
+							// 		newList.push(newphotourl);
+							// 		console.log(newList);
+								newList.push($scope.chosenDistrictList[i]);
+							};
+								
+						});
+				
 
 						// we remove the chosen city from the list
 						var newDistrictsList = _.filter($scope.districtsList, function(num){ return num._id !== chosenDistrict._id; });
 						// we chose a random other district
 						var randomDistrict = newDistrictsList[Math.floor(Math.random() * newDistrictsList.length)];
 
+						//http://www.eyeem.com/api/v2/albums/12/photos?offset=0&limit=5
+						//photos.items[x].thumbUrl
+
 						// images of random district
 						var request2 = encodeURIComponent(randomDistrict.name);
-						var url2 = API_URL + '&q=' + request2 + '&includeAlbums=true';
-						$http.get(url2).then(function(response) {
+						var url3 = API_URL + '&q=' + request2 + '&includeAlbums=true';
+						$http.get(url3).then(function(response) {
 							//console.log(response.data);
-							var r = response.data.albums.items;
-							for(var i=0; i<5; i++) {
-								r[i].district = randomDistrict._id;
-								newList.push(r[i]);
-							}
+							var albumid =response.data.albums.items[Math.floor(Math.random() * 4)].id;
+							var url4 = 'http://www.eyeem.com/api/v2/albums/' + albumid + '/photos?offset=0&limit=5&access_token=f346d6846f025af0327e840cce90591310ab5c0c';
+							$http.get(url4).then(function(response) {	
+								for(var i=0; i<5; i++) {
+									var r = response.data.photos.items;
+									console.log(r);
+									r[i].district = randomDistrict._id;
+									newList.push(r[i]);
+								};
+							
 							$scope.items = newList;
+						});
 
-						}, function(reason) {
+				}, function(reason) {
 							alert("Failed fetching eyeem search 2 (Status " + reason.status + ")");
 						});
 
